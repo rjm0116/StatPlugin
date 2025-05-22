@@ -1,0 +1,72 @@
+plugins {
+    id 'java'
+}
+
+// -----------------------------------------------------------------------------
+// ★★★ 프로젝트 기본 정보 - statplugin 프로젝트에 맞게 수정하세요 ★★★
+// -----------------------------------------------------------------------------
+group = 'com.yourname.statplugin' // ★★★ 본인의 Java 패키지 경로 루트로 변경 ★★★
+version = '1.0.0'                 // 플러그인 버전
+
+// Java 컴파일러 설정
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21) // Java 21 사용
+    }
+}
+
+// 소스 파일 인코딩 (한글 주석 등을 위해 UTF-8 권장)
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// -----------------------------------------------------------------------------
+// 라이브러리 다운로드 위치 (저장소)
+// -----------------------------------------------------------------------------
+repositories {
+    mavenCentral()
+    // PaperMC 저장소 (Paper API 및 Spigot API도 여기서 제공됨)
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+}
+
+// -----------------------------------------------------------------------------
+// ★★★ 프로젝트 의존성 (라이브러리) ★★★
+// -----------------------------------------------------------------------------
+dependencies {
+    // Paper API (Minecraft 1.21) - Spigot API 기능을 포함합니다.
+    //
+    // !!! 중요 !!!
+    // 아래 '1.21-R0.1-SNAPSHOT' 버전은 예시이며, 빌드 오류의 원인이 될 수 있습니다.
+    // PaperMC Maven 저장소 (https://repo.papermc.io/repository/maven-public/io/papermc/paper/paper-api/) 에서
+    // 현재 사용 가능한 1.21용 API 버전을 직접 확인하고 정확한 이름으로 수정해야 합니다.
+    // (예: '1.21-SNAPSHOT', '1.21.x-R0.y-SNAPSHOT' 또는 정식 릴리즈 버전)
+    // 만약 정확한 버전을 모른다면, PaperMC Discord 등에서 문의하는 것이 좋습니다.
+    compileOnly 'io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT' // <--- ★★★ 이 부분을 최신의 사용 가능한 버전으로 확인 및 수정!
+
+    // 테스트를 위한 의존성 (선택 사항)
+    // testImplementation platform('org.junit:junit-bom:5.10.0')
+    // testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+// -----------------------------------------------------------------------------
+// 리소스 파일 (plugin.yml 등) 처리
+// -----------------------------------------------------------------------------
+processResources {
+    filteringCharset = 'UTF-8' // 리소스 파일 처리 시 사용할 인코딩
+
+    // plugin.yml 파일 내의 플레이스홀더를 프로젝트 속성으로 치환
+    filesMatching('plugin.yml') {
+        expand(
+                'version': project.version,
+                // ★★★ statplugin의 메인 클래스 경로로 수정 (group + 메인 클래스 이름)
+                'mainClassPath': "${project.group}.StatPlugin",
+                // ★★★ statplugin의 플러그인 이름으로 수정 (settings.gradle의 rootProject.name 또는 직접 지정)
+                'pluginNameActual': rootProject.name // settings.gradle에 정의된 이름을 사용하거나, 'StatPlugin'으로 직접 입력
+        )
+    }
+}
+
+// (선택 사항) 빌드된 JAR 파일의 이름을 plugin.yml의 name과 동일하게 하려면:
+tasks.named('jar', Jar) { // Gradle 7.1+
+    archiveFileName = "${rootProject.name}-${project.version}.jar" // 예: StatPlugin-1.0.0.jar
+}

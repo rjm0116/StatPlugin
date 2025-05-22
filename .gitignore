@@ -1,0 +1,42 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# IntelliJ IDEA Project files
+.idea/
+*.iml
+*.ipr
+*.iws
+out/ # IntelliJ 컴파일 출력 폴더
+
+# Gradle files
+.gradle/
+build/ # Gradle 빌드 출력 폴더
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Secrets and sensitive information (add your own)
+# local.properties
+# secrets.yml
+
+# Player Data (플러그인 특정)
+playerdata/
+# PlayerStatManager에서 생성하는 폴더
